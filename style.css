@@ -1,0 +1,479 @@
+:root {
+    --bg: #0F0D13;
+    --surface: #1C1B1F;
+    --on-surface: #E6E1E5;
+    --on-surface-variant: #CAC4D0;
+    --primary: #D0BCFF;
+    --primary-container: #4F378B;
+    --on-primary-container: #EADDFF;
+    
+    /* Темный прозрачный фон, как у плашки проекта */
+    --glass-bg: rgba(25, 23, 30, 0.4); 
+    --glass-border: rgba(208, 188, 255, 0.12);
+    
+    --error-color: #F2B8B5;
+    --error-bg: rgba(242, 184, 181, 0.15);
+    --radius-full: 9999px;
+    --radius-medium: 12px;
+    --radius-large: 24px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+p, span, h1, h2, h3, h4, h5, h6, .bio-text, .project-desc, .music-title, .music-author, .music-progress-labels {
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+button, a {
+    outline: none !important;
+    text-decoration: none;
+}
+
+button:focus, a:focus, button:active, a:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+img {
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    pointer-events: none;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--on-surface);
+    font-family: 'Google Sans', -apple-system, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 80px 20px 40px;
+    position: relative;
+    overflow-x: hidden;
+    line-height: 1.5;
+}
+
+.bg-contours {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
+}
+
+.bg-contours svg {
+    width: 100vw; height: 100vh; display: block;
+}
+
+.bg-contours circle, .bg-contours ellipse {
+    fill: none; stroke: rgba(208, 188, 255, 0.08); stroke-width: 1.5;
+}
+
+.lang-switch {
+    position: fixed; 
+    top: 24px; 
+    right: 24px; 
+    z-index: 100;
+}
+
+/* Кнопка языка (без блюра, единый фон) */
+.lang-btn {
+    display: flex; align-items: center; gap: 6px;
+    background-color: var(--glass-bg); 
+    color: var(--on-surface-variant);
+    border: 1px solid var(--glass-border); 
+    border-radius: var(--radius-full);
+    padding: 8px 16px; font-family: 'Google Sans', sans-serif; font-size: 13px;
+    font-weight: 500; cursor: pointer; 
+}
+
+/* Выпадающее меню (без блюра, единый фон) */
+.lang-menu {
+    position: absolute; top: calc(100% + 8px); right: 0; min-width: 160px;
+    background-color: var(--glass-bg); 
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-medium); box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    overflow: hidden; opacity: 0; transform: translateY(-8px); pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease; 
+    display: flex; flex-direction: column;
+}
+
+.lang-menu.open {
+    opacity: 1; transform: translateY(0); pointer-events: auto;
+}
+
+.lang-item {
+    padding: 12px 16px; font-size: 14px; color: var(--on-surface-variant); cursor: pointer;
+}
+
+.lang-item:hover {
+    background-color: rgba(208, 188, 255, 0.1); color: var(--on-surface);
+}
+
+.lang-item.active {
+    color: var(--primary); font-weight: 600;
+}
+
+.profile-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 420px;
+    width: 100%;
+    z-index: 1;
+}
+
+.header-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.avatar-btn {
+    background: none; border: none; padding: 0; cursor: pointer; margin-bottom: 24px; border-radius: 50%;
+}
+
+.avatar-wrapper {
+    width: 200px; height: 200px; border-radius: 50%; background-color: var(--primary-container);
+    overflow: hidden; position: relative; transition: transform 0.2s ease;
+    box-shadow: 0 0 0 3px var(--primary), 0 0 0 8px rgba(208, 188, 255, 0.15);
+}
+
+.avatar-btn:active .avatar-wrapper {
+    transform: scale(0.95);
+}
+
+.avatar-img {
+    width: 100%; height: 100%; object-fit: cover; pointer-events: none;
+}
+
+.avatar-fallback {
+    display: none; width: 100%; height: 100%; align-items: center; justify-content: center; font-size: 80px; color: var(--on-primary-container);
+}
+
+.nickname {
+    font-size: 44px; font-weight: 600; letter-spacing: -1px; margin-bottom: 8px;
+    background: linear-gradient(90deg, #EADDFF 0%, #F2B8C6 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block; cursor: pointer; transition: transform 0.1s ease;
+}
+
+.nickname:active {
+    transform: scale(0.96);
+}
+
+.bio-text {
+    font-size: 16px; color: var(--on-surface-variant); margin-bottom: 32px; min-height: 3.2em;
+}
+
+.cursor {
+    display: inline-block; width: 2px; height: 1.1em; background: var(--primary); margin-left: 2px; vertical-align: text-bottom; animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; }
+}
+
+/* Контейнер соцсетей (без блюра, единый фон) */
+.links-container {
+    width: 100%; display: flex; flex-direction: column; gap: 12px; padding: 16px;
+    background: var(--glass-bg); 
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-large); 
+    margin-bottom: 24px;
+}
+
+.link-item {
+    display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%;
+    padding: 16px 20px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+    border-radius: var(--radius-full); color: var(--on-surface-variant); font-size: 16px;
+    font-weight: 500; transition: background 0.2s; cursor: pointer;
+}
+
+.link-item:hover {
+    background: rgba(208, 188, 255, 0.12); color: var(--on-surface);
+}
+
+.link-item .material-symbols-outlined {
+    font-size: 22px; color: var(--primary);
+}
+
+/* Карточка музыки (без блюра, единый фон) */
+.music-card {
+    width: 100%; 
+    background: var(--glass-bg); 
+    border: 1px solid var(--glass-border);
+    border-radius: 32px; 
+    padding: 32px 24px 24px;
+    display: flex; flex-direction: column; align-items: center; position: relative;
+    overflow: hidden; margin-bottom: 24px;
+}
+
+.music-cover-wrapper {
+    position: relative; margin-bottom: 28px; z-index: 1; box-shadow: 0 0 50px 10px rgba(208, 188, 255, 0.15); border-radius: 16px;
+}
+
+.music-cover {
+    width: 180px; height: 180px; border-radius: 16px; object-fit: cover; display: block;
+}
+
+.music-cover-fallback {
+    display: none; width: 180px; height: 180px; border-radius: 16px; background: var(--primary-container); align-items: center; justify-content: center; font-size: 64px; color: var(--primary);
+}
+
+/* Бейдж трека (без блюра, единый фон) */
+.music-badge {
+    position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--glass-bg); 
+    border: 1px solid var(--glass-border); 
+    border-radius: 20px;
+    padding: 6px 16px; font-size: 11px; font-weight: 600; color: #E6E1E5; text-transform: uppercase;
+    display: flex; align-items: center; gap: 6px; white-space: nowrap; z-index: 2;
+}
+
+.music-badge .material-symbols-outlined {
+    font-size: 14px;
+}
+
+.music-info {
+    text-align: center; z-index: 1; margin-bottom: 20px; margin-top: 12px;
+}
+
+.music-title {
+    font-size: 22px; font-weight: 600; font-style: italic; margin-bottom: 8px;
+}
+
+.music-author {
+    font-size: 16px; color: #CAC4D0;
+}
+
+.music-actions {
+    display: flex; gap: 24px; margin-bottom: 24px; z-index: 1;
+}
+
+.music-action-btn {
+    color: #CAC4D0; cursor: pointer;
+}
+
+.music-action-btn .material-symbols-outlined {
+    font-size: 32px;
+}
+
+.music-progress-area {
+    width: 100%; z-index: 1; margin-bottom: 24px;
+}
+
+.music-progress-bar {
+    width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; margin-bottom: 8px;
+}
+
+.music-progress-fill {
+    width: 45%; height: 100%; background: var(--primary); border-radius: 4px;
+}
+
+.music-progress-labels {
+    display: flex; justify-content: space-between; font-size: 13px; color: #CAC4D0;
+}
+
+.music-controls {
+    display: flex; align-items: center; gap: 40px; z-index: 1;
+}
+
+.music-skip {
+    color: #CAC4D0; cursor: pointer;
+}
+
+.music-skip .material-symbols-outlined {
+    font-size: 36px;
+}
+
+.music-play {
+    width: 72px; height: 72px; border-radius: 50%; background: var(--primary); color: #1D1B20; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 20px rgba(208, 188, 255, 0.3);
+}
+
+.music-play .material-symbols-outlined {
+    font-size: 40px; margin-left: 4px;
+}
+
+.section-title {
+    font-size: 22px; font-weight: 600; color: var(--primary); margin: 0 0 16px; width: 100%;
+}
+
+.projects-grid {
+    display: flex; flex-direction: column; gap: 12px; width: 100%; margin-bottom: 24px;
+}
+
+/* Карточка проекта */
+.project-card {
+    display: flex; align-items: flex-start; gap: 16px; padding: 20px; 
+    background: var(--glass-bg); 
+    border: 1px solid var(--glass-border); 
+    border-radius: var(--radius-medium);
+}
+
+.project-icon {
+    width: 48px; height: 48px; border-radius: 12px; background: rgba(208, 188, 255, 0.1); display: flex; align-items: center; justify-content: center; color: var(--primary); flex-shrink: 0; overflow: hidden;
+}
+
+.project-icon img {
+    width: 100%; height: 100%; object-fit: contain;
+}
+
+.project-info {
+    text-align: left; flex-grow: 1;
+}
+
+.project-header {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+}
+
+.project-name {
+    font-size: 18px; font-weight: 600;
+}
+
+.project-badge {
+    font-size: 10px; font-weight: 600; color: var(--error-color); background: var(--error-bg); padding: 2px 8px; border-radius: 6px; text-transform: uppercase;
+}
+
+.project-desc {
+    font-size: 14px; color: var(--on-surface-variant); margin-bottom: 12px;
+}
+
+.project-links {
+    display: flex; gap: 12px;
+}
+
+.project-link {
+    display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 500; color: var(--primary); padding: 6px 12px; background: rgba(208, 188, 255, 0.1); border-radius: 8px; cursor: pointer;
+}
+
+.project-link .material-symbols-outlined {
+    font-size: 16px;
+}
+
+/* Тех-стек (без блюра, единый фон) */
+.tech-stack-container {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-large);
+    margin-bottom: 24px;
+    overflow: hidden;
+    touch-action: pan-y;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    gap: 12px 20px;
+    padding: 20px;
+    transition: background 0.3s;
+}
+
+.tech-stack-container.active {
+    display: block;
+    padding: 0;
+    background: var(--glass-bg);
+}
+
+.tech-tag {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--on-surface-variant);
+    user-select: none;
+    -webkit-user-select: none;
+    white-space: nowrap;
+    line-height: 1;
+    display: inline-block;
+    will-change: transform;
+}
+
+.tech-stack-container.active .tech-tag {
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: grab;
+    color: var(--primary);
+    transform-origin: center center;
+    margin: 0;
+}
+
+.tech-stack-container.active .tech-tag:active {
+    cursor: grabbing;
+}
+
+.confetti-layer {
+    position: fixed; inset: 0; pointer-events: none; z-index: 9999; overflow: hidden;
+}
+
+/* Обновленная анимация частиц (плавная и медленная) */
+.particle {
+    position: absolute; display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; margin-left: -16px; margin-top: -16px;
+    color: var(--primary); opacity: 1; transform: translate(0, 0) scale(1);
+    transition: transform 2s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 2s ease-out;
+}
+
+.particle .material-symbols-outlined {
+    font-size: 28px;
+}
+
+@media (max-width: 480px) {
+    body { padding: 60px 16px 32px; }
+    .avatar-wrapper { width: 160px; height: 160px; }
+    .nickname { font-size: 36px; }
+    .links-container { padding: 12px; }
+    .music-card { padding: 24px 16px 20px; }
+    .music-cover, .music-cover-fallback { width: 140px; height: 140px; }
+    .music-title { font-size: 18px; }
+    .project-card { padding: 16px; }
+    .project-icon { width: 40px; height: 40px; }
+    .tech-stack-container { height: 280px; gap: 10px 14px; }
+    .tech-tag { font-size: 18px; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    body { padding: 60px clamp(24px, 5vw, 60px) 40px; align-items: flex-start; }
+    .profile-content { max-width: 540px; align-items: flex-start; text-align: left; }
+    .header-section { flex-direction: row; gap: 24px; align-items: center; margin-bottom: 24px; }
+    .avatar-btn { margin-bottom: 0; }
+    .avatar-wrapper { width: 180px; height: 180px; }
+    .nickname { font-size: 42px; margin-bottom: 0; }
+    .bio-text { text-align: left; margin-bottom: 28px; }
+    .music-info { text-align: left; align-self: flex-start; padding-left: 16px; }
+    .music-card { align-items: flex-start; }
+    .music-actions, .music-controls { align-self: center; }
+    .project-header { justify-content: flex-start; }
+    .tech-tag { font-size: 24px; }
+}
+
+@media (min-width: 1024px) {
+    body { padding: 80px clamp(40px, 8vw, 120px) 40px; align-items: flex-start; }
+    .profile-content { max-width: clamp(600px, 45vw, 800px); align-items: flex-start; text-align: left; }
+    .header-section { flex-direction: row; gap: clamp(24px, 3vw, 48px); align-items: center; margin-bottom: 32px; }
+    .avatar-btn { margin-bottom: 0; }
+    .avatar-wrapper { width: 220px; height: 220px; }
+    .nickname { font-size: 56px; margin-bottom: 0; }
+    .bio-text { text-align: left; margin-bottom: 32px; font-size: 18px; }
+    .link-item { justify-content: flex-start; padding: 16px 24px; }
+    .music-card { align-items: flex-start; padding: 40px 32px 32px; }
+    .music-cover { width: 200px; height: 200px; }
+    .music-info { text-align: left; align-self: flex-start; padding-left: 0; }
+    .music-title { font-size: 26px; }
+    .music-actions, .music-controls { align-self: center; }
+    .music-progress-area { margin-top: 16px; }
+    .tech-stack-container { height: clamp(380px, 25vw, 480px); }
+    .tech-tag { font-size: clamp(28px, 2vw, 36px); }
+}
