@@ -1,7 +1,8 @@
+/* Подключение локального шрифта Teletactile */
 @font-face {
-    font-family: 'Determination';
-    src: url('https://cdn.jsdelivr.net/gh/StackTheFennec/Determination@master/Determination-Regular.otf') format('opentype');
-    font-weight: normal;
+    font-family: 'Teletactile';
+    src: url('teletactile.ttf') format('truetype');
+    font-weight: 400;
     font-style: normal;
     font-display: swap;
 }
@@ -9,6 +10,7 @@
 :root {
     --bg: #000000;
     --text: #FFFFFF;
+    --text-dim: #888888;
     --border: #333333;
     --accent: #FFFFFF;
 }
@@ -20,7 +22,7 @@
     user-select: none;
     -webkit-user-select: none;
     -webkit-tap-highlight-color: transparent;
-    font-family: 'Determination', 'Courier New', monospace;
+    font-family: 'Teletactile', 'Courier New', monospace;
 }
 
 p, span, h1, h2, h3, h4, h5, h6, .bio-text, .project-desc, .music-title, .music-author {
@@ -40,6 +42,13 @@ img {
     pointer-events: none;
 }
 
+/* Общие стили для иконок Bootstrap */
+i {
+    font-size: 20px;
+    color: var(--text);
+    transition: color 0.1s ease;
+}
+
 body {
     background-color: var(--bg);
     color: var(--text);
@@ -55,14 +64,7 @@ body {
     font-size: 16px;
 }
 
-.pixel-icon {
-    width: 20px;
-    height: 20px;
-    image-rendering: pixelated;
-    filter: invert(1);
-    pointer-events: none;
-}
-
+/* Language Dropdown */
 .lang-switch {
     position: fixed;
     top: 20px;
@@ -73,11 +75,12 @@ body {
 .lang-btn {
     background: transparent;
     border: 1px solid var(--border);
+    border-radius: 8px;
     padding: 6px 12px;
     cursor: pointer;
     font-size: 14px;
-    color: var(--text);
-    font-weight: 600;
+    color: var(--text-dim);
+    font-weight: 400;
 }
 
 .lang-btn:hover {
@@ -92,11 +95,13 @@ body {
     min-width: 100px;
     background: var(--bg);
     border: 1px solid var(--border);
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.15s ease;
+    overflow: hidden;
 }
 
 .lang-menu.open {
@@ -109,7 +114,7 @@ body {
     font-size: 14px;
     cursor: pointer;
     border-bottom: 1px solid var(--border);
-    color: var(--text);
+    color: var(--text-dim);
 }
 
 .lang-item:last-child {
@@ -122,10 +127,11 @@ body {
 }
 
 .lang-item.active {
-    font-weight: bold;
+    font-weight: 400;
     color: var(--text);
 }
 
+/* Profile Content */
 .profile-content {
     display: flex;
     flex-direction: column;
@@ -143,11 +149,13 @@ body {
     margin-bottom: 8px;
 }
 
+/* Аватарка */
 .avatar-wrapper {
     width: 160px;
     height: 160px;
     background: #111;
     border: 2px solid #FFFFFF;
+    border-radius: 12px;
     overflow: hidden;
     position: relative;
     display: flex;
@@ -170,12 +178,12 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 64px;
-    color: var(--text);
+    color: var(--text-dim);
 }
 
 .nickname {
     font-size: 42px;
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 1px;
     margin-bottom: 4px;
     color: var(--text);
@@ -189,7 +197,6 @@ body {
     max-width: 400px;
 }
 
-/* Курсор — вертикальная линия */
 .cursor {
     display: inline-block;
     width: 2px;
@@ -205,6 +212,7 @@ body {
     50.01%, 100% { opacity: 0; }
 }
 
+/* Соцсети */
 .socials-container {
     display: flex;
     justify-content: center;
@@ -220,6 +228,7 @@ body {
     width: 44px;
     height: 44px;
     border: 1px solid var(--border);
+    border-radius: 8px;
     cursor: pointer;
     transition: background 0.1s, border-color 0.1s;
 }
@@ -229,13 +238,15 @@ body {
     border-color: var(--text);
 }
 
-.social-btn:hover .pixel-icon {
-    filter: invert(0);
+.social-btn:hover i {
+    color: var(--bg); /* Иконка становится черной на белом фоне */
 }
 
+/* Карточка музыки */
 .music-card {
     width: 100%;
     border: 1px solid var(--border);
+    border-radius: 12px;
     padding: 24px;
     display: flex;
     flex-direction: column;
@@ -249,10 +260,12 @@ body {
     margin-bottom: 24px;
 }
 
+/* Обложка трека */
 .music-cover {
     width: 140px;
     height: 140px;
-    border: 1px solid var(--border);
+    border: 2px solid #FFFFFF;
+    border-radius: 12px;
     object-fit: cover;
     display: block;
 }
@@ -261,9 +274,15 @@ body {
     display: none;
     width: 140px;
     height: 140px;
-    border: 1px solid var(--border);
+    border: 2px solid #FFFFFF;
+    border-radius: 12px;
     align-items: center;
     justify-content: center;
+}
+
+.music-cover-fallback i {
+    font-size: 48px;
+    color: var(--text-dim);
 }
 
 .music-badge {
@@ -273,11 +292,12 @@ body {
     transform: translateX(-50%);
     background: var(--bg);
     border: 1px solid var(--border);
+    border-radius: 6px;
     padding: 2px 12px;
     font-size: 12px;
     color: var(--text);
     white-space: nowrap;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .music-info {
@@ -287,14 +307,14 @@ body {
 
 .music-title {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 400;
     margin-bottom: 4px;
     color: var(--text);
 }
 
 .music-author {
     font-size: 14px;
-    color: var(--text);
+    color: var(--text-dim);
 }
 
 .music-actions {
@@ -307,8 +327,13 @@ body {
     cursor: pointer;
 }
 
-.music-action-btn:hover .pixel-icon {
-    filter: invert(0.7);
+.music-action-btn i {
+    font-size: 24px;
+    color: var(--text-dim);
+}
+
+.music-action-btn:hover i {
+    color: var(--text);
 }
 
 .music-progress-area {
@@ -320,6 +345,7 @@ body {
     width: 100%;
     height: 6px;
     border: 1px solid var(--border);
+    border-radius: 4px;
     overflow: hidden;
     margin-bottom: 8px;
 }
@@ -328,13 +354,14 @@ body {
     width: 45%;
     height: 100%;
     background: var(--text);
+    border-radius: 4px;
 }
 
 .music-progress-labels {
     display: flex;
     justify-content: space-between;
     font-size: 12px;
-    color: var(--text);
+    color: var(--text-dim);
 }
 
 .music-controls {
@@ -348,22 +375,28 @@ body {
     cursor: pointer;
 }
 
-.music-skip:hover .pixel-icon {
-    filter: invert(0.7);
+.music-skip i {
+    font-size: 24px;
+    color: var(--text-dim);
+}
+
+.music-skip:hover i {
+    color: var(--text);
 }
 
 .music-play {
     cursor: pointer;
 }
 
-.music-play .pixel-icon {
-    width: 28px;
-    height: 28px;
+.music-play i {
+    font-size: 32px;
+    color: var(--text);
 }
 
+/* Заголовки и проекты */
 .section-title {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 400;
     color: var(--text);
     margin: 0 0 16px;
     width: 100%;
@@ -379,18 +412,21 @@ body {
     margin-bottom: 24px;
 }
 
+/* Карточка проекта */
 .project-card {
     display: flex;
     align-items: flex-start;
     gap: 16px;
     padding: 16px;
     border: 1px solid var(--border);
+    border-radius: 12px;
 }
 
 .project-icon {
     width: 48px;
     height: 48px;
     border: 1px solid var(--border);
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -404,10 +440,9 @@ body {
     object-fit: contain;
 }
 
-.project-icon-fallback {
-    display: none;
+.project-icon-fallback i {
     font-size: 24px;
-    color: var(--text);
+    color: var(--text-dim);
 }
 
 .project-info {
@@ -424,21 +459,22 @@ body {
 
 .project-name {
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 400;
     color: var(--text);
 }
 
 .project-badge {
     font-size: 12px;
-    font-weight: 700;
+    font-weight: 400;
     color: var(--bg);
     background: var(--text);
+    border-radius: 4px;
     padding: 2px 8px;
 }
 
 .project-desc {
     font-size: 14px;
-    color: var(--text);
+    color: var(--text-dim);
     margin-bottom: 12px;
 }
 
@@ -449,9 +485,10 @@ body {
 
 .project-link {
     font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
+    font-weight: 400;
+    color: var(--text-dim);
     cursor: pointer;
+    border-radius: 4px;
 }
 
 .project-link:hover {
@@ -459,11 +496,13 @@ body {
     text-decoration: underline;
 }
 
+/* Тех-стек */
 .tech-stack-container {
     position: relative;
     width: 100%;
     height: 300px;
     border: 1px solid var(--border);
+    border-radius: 12px;
     margin-bottom: 24px;
     overflow: hidden;
     touch-action: pan-y;
@@ -483,7 +522,7 @@ body {
 
 .tech-tag {
     font-size: 24px;
-    font-weight: 600;
+    font-weight: 400;
     color: var(--text);
     white-space: nowrap;
     line-height: 1;

@@ -17,16 +17,10 @@ const translations = {
         abandoned: "ABANDONED", 
         stack_title: "> MY TECH STACK <",
         quotes: [
-            "La-la-la, I'm Semyon Lobanov, my head is made of potatoes...",
-            "Vibe coder",
-            "I wish you good health, your documents, little ones",
-            "Did you know Google Play Protect is useless?",
-            "TG: @Krugeru",
-            "SOS",
-            "Dox, swat, sportiki",
-            "Programming, programming, programming!",
-            "Blah-blah-blah...",
-            "Wubba Lubba Dub Dub!"
+            "JS Stack",
+            "There must be something else here...",
+            "JavaScript is my love",
+            "Hi, I'm Kruger!"
         ]
     },
     uk: { 
@@ -39,16 +33,10 @@ const translations = {
         abandoned: "ЗАКИНУТИЙ", 
         stack_title: "> МІЙ ТЕХ. СТЕК <",
         quotes: [
-            "Ля-ля-ля, я Семен Лобанов, у мене голова з картоплі...",
-            "Вайбкодер",
-            "Бажаю здоров'я, ваші документи, маленькі",
-            "Ви знали що Google Play захист марний?",
-            "TG: @Krugeru",
-            "SOS",
-            "Докс, сват, спортики",
-            "Програмування, програмування, програмування!",
-            "Бла-бла-бла...",
-            "Вабба, лабба, даб, даб!"
+            "JS Stack",
+            "Тут повинно бути щось ще...",
+            "JavaScript is my love",
+            "Ку, я Kruger!"
         ]
     },
     ru: { 
@@ -61,16 +49,10 @@ const translations = {
         abandoned: "ЗАБРОШЕН", 
         stack_title: "> МОЙ ТЕХ. СТЕК <",
         quotes: [
-            "Ля-ля-ля, я Семён Лобанов, у меня башка из картошки...",
-            "Вайбкодер",
-            "Желаю здоровья, ваши документы, маленькие",
-            "Вы знали что Google Play защита бесполезная?",
-            "TG: @Krugeru",
-            "SOS",
-            "Докс, сват, спортики",
-            "Программирование, программирование, программирование!",
-            "Бла-бла-бла...",
-            "Вабба, лабба, даб, даб!"
+            "JS Stack",
+            "Тут должно быть что-то ещё...",
+            "JavaScript is my love",
+            "Ку, я Kruger!"
         ]
     }
 };
@@ -78,6 +60,9 @@ const translations = {
 const bioText = document.getElementById('bioText');
 let currentLangDict = translations.en;
 let typingSession = 0;
+
+// Индекс текущей цитаты для последовательного вывода
+let currentQuoteIndex = 0; 
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -92,26 +77,32 @@ async function startTerminal(sessionId) {
         }
         
         const quotes = currentLangDict.quotes;
-        const text = quotes[Math.floor(Math.random() * quotes.length)];
         
-        // Печать замедлена (120мс на букву)
+        // Берем цитату по порядку, а не рандомно
+        const text = quotes[currentQuoteIndex % quotes.length];
+        currentQuoteIndex++; // Сдвигаем индекс для следующего раза
+        
+        // Печать (ускорена до 80мс)
         for (let i = 0; i < text.length; i++) {
             if (sessionId !== typingSession) return;
             bioText.textContent += text[i];
-            await sleep(120); 
+            await sleep(80); 
         }
         
+        // Пауза перед удалением
         for (let i = 0; i < 40; i++) {
             if (sessionId !== typingSession) return;
             await sleep(50);
         }
         
+        // Удаление (замедлено до 50мс)
         for (let i = bioText.textContent.length; i > 0; i--) {
             if (sessionId !== typingSession) return;
             bioText.textContent = bioText.textContent.slice(0, -1);
-            await sleep(25);
+            await sleep(50);
         }
         
+        // Пауза после полного удаления
         for (let i = 0; i < 10; i++) {
             if (sessionId !== typingSession) return;
             await sleep(50);
@@ -136,6 +127,10 @@ function applyLanguage(lang) {
 
     currentLangDict = dict;
     bioText.textContent = '';
+    
+    // При смене языка сбрасываем индекс, чтобы начать сначала
+    currentQuoteIndex = 0; 
+    
     typingSession++;
     startTerminal(typingSession);
 }
