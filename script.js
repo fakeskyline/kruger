@@ -9,13 +9,13 @@ document.addEventListener('dragstart', e => {
 const translations = {
     en: { 
         nickname: "Kruger", 
-        last_track: "Favorite track", 
-        listened: "Listened", 
-        projects_title: "> My Projects <", 
+        last_track: "FAVORITE TRACK", 
+        listened: "LISTENED", 
+        projects_title: "> MY PROJECTS <", 
         project1_name: "Zeed", 
         project1_desc: "A lightweight and fast asynchronous framework for Telegram bots.", 
-        abandoned: "Abandoned", 
-        stack_title: "> My Tech Stack <",
+        abandoned: "ABANDONED", 
+        stack_title: "> MY TECH STACK <",
         quotes: [
             "La-la-la, I'm Semyon Lobanov, my head is made of potatoes...",
             "Vibe coder",
@@ -31,13 +31,13 @@ const translations = {
     },
     uk: { 
         nickname: "Kruger", 
-        last_track: "Улюблений трек", 
-        listened: "Прослухано", 
-        projects_title: "> Мої Проєкти <", 
+        last_track: "УЛЮБЛЕНИЙ ТРЕК", 
+        listened: "ПРОСЛУХАНО", 
+        projects_title: "> МОЇ ПРОЄКТИ <", 
         project1_name: "Zeed", 
         project1_desc: "Легкий та швидкий асинхронний фреймворк для Telegram-ботів.", 
-        abandoned: "Закинутий", 
-        stack_title: "> Мій Тех. Стек <",
+        abandoned: "ЗАКИНУТИЙ", 
+        stack_title: "> МІЙ ТЕХ. СТЕК <",
         quotes: [
             "Ля-ля-ля, я Семен Лобанов, у мене голова з картоплі...",
             "Вайбкодер",
@@ -53,13 +53,13 @@ const translations = {
     },
     ru: { 
         nickname: "Kruger", 
-        last_track: "Любимый трек", 
-        listened: "Прослушано", 
-        projects_title: "> Мои Проекты <", 
+        last_track: "ЛЮБИМЫЙ ТРЕК", 
+        listened: "ПРОСЛУШАНО", 
+        projects_title: "> МОИ ПРОЕКТЫ <", 
         project1_name: "Zeed", 
         project1_desc: "Легкий и быстрый асинхронный фреймворк для Telegram-ботов.", 
-        abandoned: "Заброшен", 
-        stack_title: "> Мой Тех. Стек <",
+        abandoned: "ЗАБРОШЕН", 
+        stack_title: "> МОЙ ТЕХ. СТЕК <",
         quotes: [
             "Ля-ля-ля, я Семён Лобанов, у меня башка из картошки...",
             "Вайбкодер",
@@ -94,10 +94,11 @@ async function startTerminal(sessionId) {
         const quotes = currentLangDict.quotes;
         const text = quotes[Math.floor(Math.random() * quotes.length)];
         
+        // Печать замедлена (120мс на букву)
         for (let i = 0; i < text.length; i++) {
             if (sessionId !== typingSession) return;
             bioText.textContent += text[i];
-            await sleep(65);
+            await sleep(120); 
         }
         
         for (let i = 0; i < 40; i++) {
@@ -120,7 +121,6 @@ async function startTerminal(sessionId) {
 
 const langBtn = document.getElementById('langBtn');
 const langMenu = document.getElementById('langMenu');
-const currentLangLabel = document.getElementById('currentLangLabel');
 const langSwitch = document.getElementById('langSwitch');
 
 function applyLanguage(lang) {
@@ -131,7 +131,6 @@ function applyLanguage(lang) {
         if (dict[el.dataset.i18n]) el.textContent = dict[el.dataset.i18n]; 
     });
     
-    currentLangLabel.textContent = lang.toUpperCase();
     document.querySelectorAll('.lang-item').forEach(item => item.classList.toggle('active', item.dataset.value === lang));
     try { localStorage.setItem('preferred_lang', lang); } catch (e) {}
 
@@ -162,48 +161,7 @@ document.addEventListener('click', (e) => {
     if (!langSwitch.contains(e.target)) langMenu.classList.remove('open'); 
 });
 
-const confettiLayer = document.getElementById('confettiLayer');
-const avatarTrigger = document.getElementById('avatarTrigger');
-const nicknameTrigger = document.getElementById('nicknameTrigger');
-const icons = ['star', 'favorite', 'thumb_up', 'bolt', 'rocket_launch', 'auto_awesome', 'flutter_dash', 'celebration'];
-
-let isBursting = false;
-
-function triggerConfetti(targetElement) {
-    if (isBursting) return; 
-    isBursting = true;
-    
-    const rect = targetElement.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    
-    for (let i = 0; i < (window.innerWidth <= 480 ? 15 : 20); i++) {
-        const p = document.createElement('div'); 
-        p.className = 'particle';
-        p.innerHTML = `<span class="material-symbols-outlined">${icons[Math.floor(Math.random() * icons.length)]}</span>`;
-        p.style.left = `${centerX}px`; 
-        p.style.top = `${centerY}px`; 
-        confettiLayer.appendChild(p);
-        
-        const angle = Math.random() * Math.PI * 2;
-        const dist = 120 + Math.random() * 180; 
-        const rotation = (Math.random() - 0.5) * 360; 
-        
-        requestAnimationFrame(() => {
-            p.style.transform = `translate(${Math.cos(angle) * dist}px, ${Math.sin(angle) * dist}px) rotate(${rotation}deg) scale(0.3)`;
-            p.style.opacity = '0';
-        });
-        
-        setTimeout(() => p.remove(), 2100);
-    }
-    
-    setTimeout(() => { isBursting = false; }, 600);
-}
-
-avatarTrigger.addEventListener('click', () => triggerConfetti(avatarTrigger));
-nicknameTrigger.addEventListener('click', () => triggerConfetti(nicknameTrigger));
-
-// ЗАЩИТА ОТ ПАДЕНИЯ
+// Physics logic
 if (typeof Matter !== 'undefined') {
     const { Engine, Runner, Bodies, Composite, Mouse, MouseConstraint, Events, Body } = Matter;
     const container = document.getElementById('techStackContainer');
@@ -237,7 +195,7 @@ if (typeof Matter !== 'undefined') {
         engine.world.gravity.y = 0.8;
         engine.world.gravity.x = 0;
 
-        const wallThickness = 100;
+        const wallThickness = 300;
         const walls = [
             Bodies.rectangle(cw / 2, -wallThickness / 2, cw + wallThickness * 2, wallThickness, { isStatic: true }),
             Bodies.rectangle(cw / 2, ch + wallThickness / 2, cw + wallThickness * 2, wallThickness, { isStatic: true }),
@@ -302,6 +260,26 @@ if (typeof Matter !== 'undefined') {
                     });
                 }
             }
+
+            wordBodies.forEach(({ body, w, h }) => {
+                const x = body.position.x;
+                const y = body.position.y;
+                const halfW = w / 2;
+                const halfH = h / 2;
+                let newX = x, newY = y;
+                let changed = false;
+
+                if (x - halfW < 0) { newX = halfW; changed = true; }
+                else if (x + halfW > currentCw) { newX = currentCw - halfW; changed = true; }
+
+                if (y - halfH < 0) { newY = halfH; changed = true; }
+                else if (y + halfH > currentCh) { newY = currentCh - halfH; changed = true; }
+
+                if (changed) {
+                    Body.setPosition(body, { x: newX, y: newY });
+                    Body.setVelocity(body, { x: 0, y: 0 });
+                }
+            });
         });
 
         runner = Runner.create();
@@ -323,7 +301,7 @@ if (typeof Matter !== 'undefined') {
         
         const cw = container.clientWidth;
         const ch = container.clientHeight;
-        const wallThickness = 100;
+        const wallThickness = 300;
         
         const newWalls = [
             Bodies.rectangle(cw / 2, -wallThickness / 2, cw + wallThickness * 2, wallThickness, { isStatic: true }),
@@ -336,18 +314,20 @@ if (typeof Matter !== 'undefined') {
         oldWalls.forEach(w => Composite.remove(engine.world, w));
         Composite.add(engine.world, newWalls);
 
-        wordBodies.forEach(({ body }) => {
-            const bounds = body.bounds;
-            let dx = 0, dy = 0;
-            
-            if (bounds.min.x < 0) dx = -bounds.min.x;
-            else if (bounds.max.x > cw) dx = cw - bounds.max.x;
-            
-            if (bounds.min.y < 0) dy = -bounds.min.y;
-            else if (bounds.max.y > ch) dy = ch - bounds.max.y;
-            
-            if (dx !== 0 || dy !== 0) {
-                Body.setPosition(body, { x: body.position.x + dx, y: body.position.y + dy });
+        wordBodies.forEach(({ body, w, h }) => {
+            const halfW = w / 2;
+            const halfH = h / 2;
+            let newX = body.position.x, newY = body.position.y;
+            let changed = false;
+
+            if (newX - halfW < 0) { newX = halfW; changed = true; }
+            else if (newX + halfW > cw) { newX = cw - halfW; changed = true; }
+
+            if (newY - halfH < 0) { newY = halfH; changed = true; }
+            else if (newY + halfH > ch) { newY = ch - halfH; changed = true; }
+
+            if (changed) {
+                Body.setPosition(body, { x: newX, y: newY });
                 Body.setVelocity(body, { x: 0, y: 0 });
             }
         });
