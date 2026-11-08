@@ -1,143 +1,229 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#000000">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#141218" id="metaTheme">
+    <meta name="color-scheme" content="dark light">
+
+    <!-- Тема до першого малювання, щоб не було спалаху -->
+    <script>
+        (function () {
+            var saved = null;
+            try { saved = localStorage.getItem('theme'); } catch (e) {}
+            if (saved !== 'dark' && saved !== 'light' && saved !== 'amoled') {
+                saved = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+            }
+            document.documentElement.dataset.theme = saved;
+        })();
+    </script>
+
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%23FFFFFF%22>K</text></svg>">
-    
+
     <meta name="description" content="Kruger — Developer. Building digital projects and experimenting with code.">
     <meta property="og:title" content="Kruger">
     <meta property="og:description" content="Kruger — Developer. Building digital projects and experimenting with code.">
-    <meta property="og:image" content="./photo.png">
+    <meta property="og:image" content="./assets/photo.png">
     <meta property="og:type" content="website">
-    <title>Kruger</title>
 
-    <!-- Иконки Bootstrap (сглаженные) -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    
+    <title>Kruger — Portfolio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Іконки (display=block: без «стрибка» з текстом-лігатурою) -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block">
+    <!-- Google Sans Flex (змінний шрифт, вісь ROND). Якщо не завантажиться — працює локальний gs.ttf -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght,ROND@100..1000,0..100&display=swap">
+
     <link rel="stylesheet" href="style.css">
+
     <script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
 </head>
 <body>
 
-    <div class="lang-switch" id="langSwitch">
-        <button class="lang-btn" id="langBtn" aria-haspopup="listbox" aria-expanded="false">
-            <span>[ LANG ]</span>
-        </button>
-        <div class="lang-menu" id="langMenu" role="listbox">
-            <div class="lang-item active" data-value="en" role="option">EN</div>
-            <div class="lang-item" data-value="uk" role="option">UK</div>
-            <div class="lang-item" data-value="ru" role="option">RU</div>
+    <audio id="audioPlayer" src="./assets/music.mp3" preload="metadata"></audio>
+
+    <!-- M3E Loading indicator: форма, що морфиться й обертається -->
+    <div class="loader" id="loader" role="status" aria-live="polite" aria-label="Loading">
+        <div class="loader-shape">
+            <svg viewBox="0 0 100 100" aria-hidden="true"><path id="loaderPath"></path></svg>
         </div>
     </div>
 
-    <main class="profile-content">
-        
-        <div class="header-section">
-            <div class="avatar-wrapper">
-                <img src="./photo.png" alt="Kruger" class="avatar-img" loading="eager" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="avatar-fallback">K</div>
-            </div>
+    <main class="layout">
 
-            <h1 class="nickname" data-i18n="nickname">Kruger</h1>
-        </div>
-        
-        <p class="bio-text">
-            <span id="bioText"></span><span class="cursor" aria-hidden="true"></span>
-        </p>
+        <aside class="sidebar">
 
-        <div class="socials-container">
-            <a href="https://t.me/krugeru" target="_blank" rel="noopener noreferrer" class="social-btn" title="Telegram">
-                <i class="bi bi-telegram"></i>
-            </a>
-            <a href="https://github.com/fakeskyline" target="_blank" rel="noopener noreferrer" class="social-btn" title="GitHub">
-                <i class="bi bi-github"></i>
-            </a>
-            <a href="https://www.tiktok.com/@whatskyline" target="_blank" rel="noopener noreferrer" class="social-btn" title="TikTok">
-                <i class="bi bi-tiktok"></i>
-            </a>
-            <a href="mailto:zovnercukmaksim197@gmail.com" class="social-btn" title="Email">
-                <i class="bi bi-envelope"></i>
-            </a>
-        </div>
+            <!-- Профіль -->
+            <section class="card hero reveal" style="--i:0">
+                <button class="avatar" id="avatarBtn" type="button" data-i18n-label="avatar_hint" aria-label="Change shape" title="Change shape">
+                    <svg class="avatar-svg" viewBox="0 0 100 100" aria-hidden="true">
+                        <defs>
+                            <clipPath id="avatarClip"><path id="avatarPath"></path></clipPath>
+                        </defs>
+                        <g clip-path="url(#avatarClip)">
+                            <rect x="-20" y="-20" width="140" height="140" class="shape-bg"></rect>
+                            <image href="./assets/photo.png" x="-4" y="-4" width="108" height="108" preserveAspectRatio="xMidYMid slice"></image>
+                        </g>
+                    </svg>
+                </button>
 
-        <div class="music-card">
-            <div class="music-cover-wrapper">
-                <img src="./cover.png" alt="Cover" class="music-cover" loading="eager" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="music-cover-fallback">
-                    <i class="bi bi-file-earmark-x"></i>
+                <div class="hero-text">
+                    <h1 class="nickname" data-i18n="nickname">Kruger</h1>
+                    <p class="bio" aria-live="off">
+                        <span class="bio-chip">
+                            <span class="material-symbols-rounded" aria-hidden="true">terminal</span>
+                            <span class="bio-line"><span id="bioText"></span><span class="cursor" aria-hidden="true"></span></span>
+                        </span>
+                    </p>
                 </div>
-                <div class="music-badge">
-                    <span data-i18n="last_track">FAVORITE TRACK</span>
-                </div>
-            </div>
-            <div class="music-info">
-                <div class="music-title">Пожалуйста, только не домой</div>
-                <div class="music-author">Автоспорт</div>
-            </div>
-            <div class="music-actions">
-                <a href="https://m.soundcloud.com/avtosportbrat/lficyypcuzsj" target="_blank" rel="noopener noreferrer" class="music-action-btn" title="SoundCloud">
-                    <i class="bi bi-soundwave"></i>
-                </a>
-                <a href="https://m.soundcloud.com/avtosportbrat/lficyypcuzsj" target="_blank" rel="noopener noreferrer" class="music-action-btn" title="Open">
-                    <i class="bi bi-box-arrow-up-right"></i>
-                </a>
-            </div>
-            <div class="music-progress-area">
-                <div class="music-progress-bar"><div class="music-progress-fill"></div></div>
-                <div class="music-progress-labels"><span>#1</span> <span data-i18n="listened">LISTENED</span></div>
-            </div>
-            <div class="music-controls">
-                <a href="https://m.soundcloud.com/avtosportbrat/lficyypcuzsj" target="_blank" rel="noopener noreferrer" class="music-skip" title="Previous">
-                    <i class="bi bi-skip-start-fill"></i>
-                </a>
-                <a href="https://m.soundcloud.com/avtosportbrat/lficyypcuzsj" target="_blank" rel="noopener noreferrer" class="music-play" title="Play">
-                    <i class="bi bi-play-fill"></i>
-                </a>
-                <a href="https://m.soundcloud.com/avtosportbrat/lficyypcuzsj" target="_blank" rel="noopener noreferrer" class="music-skip" title="Next">
-                    <i class="bi bi-skip-end-fill"></i>
-                </a>
-            </div>
-        </div>
 
-        <div class="section-title" data-i18n="projects_title">> MY PROJECTS <</div>
-        <div class="projects-grid">
-            <div class="project-card">
-                <div class="project-icon">
-                    <img src="./icon.png" alt="Zeed Icon" loading="eager" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <span class="project-icon-fallback" style="display: none;">
-                        <i class="bi bi-code-square"></i>
+                <!-- Connected button group: активна кнопка розтягується (weight-анімація) -->
+                <div class="socials" role="group" aria-label="Links">
+                    <a href="https://t.me/krugeru" target="_blank" rel="noopener noreferrer" class="social" title="Telegram" aria-label="Telegram">
+                        <span class="material-symbols-rounded">send</span>
+                    </a>
+                    <a href="https://github.com/fakeskyline" target="_blank" rel="noopener noreferrer" class="social" title="GitHub" aria-label="GitHub">
+                        <span class="material-symbols-rounded">code</span>
+                    </a>
+                    <a href="https://www.tiktok.com/@whatskyline" target="_blank" rel="noopener noreferrer" class="social" title="TikTok" aria-label="TikTok">
+                        <span class="material-symbols-rounded">music_note</span>
+                    </a>
+                    <a href="mailto:zovnercukmaksim197@gmail.com" class="social" title="Email" aria-label="Email">
+                        <span class="material-symbols-rounded">mail</span>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Плеєр -->
+            <section class="card player reveal" style="--i:1" id="player">
+                <div class="cover">
+                    <button class="cover-shape" id="coverBtn" type="button" aria-label="Play" data-i18n-label="play">
+                        <svg viewBox="0 0 100 100" aria-hidden="true">
+                            <defs>
+                                <clipPath id="coverClip"><path id="coverPath"></path></clipPath>
+                            </defs>
+                            <g clip-path="url(#coverClip)">
+                                <rect x="-20" y="-20" width="140" height="140" class="shape-bg"></rect>
+                                <image href="./assets/cover.png" x="-4" y="-4" width="108" height="108" preserveAspectRatio="xMidYMid slice"></image>
+                            </g>
+                        </svg>
+                    </button>
+                    <div class="chip chip-badge">
+                        <span class="eq" aria-hidden="true"><i></i><i></i><i></i></span>
+                        <span data-i18n="last_track">FAVORITE TRACK</span>
+                    </div>
+                </div>
+
+                <div class="track-info">
+                    <div class="track-title">Пожалуйста, только не домой</div>
+                    <div class="track-author">Автоспорт</div>
+                </div>
+
+                <!-- Хвиляста M3E-смужка прогресу -->
+                <div class="wavy" id="seek" role="slider" tabindex="0" aria-label="Seek" data-i18n-label="seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                    <svg id="wavySvg" aria-hidden="true">
+                        <path id="waveInactive" class="wave-inactive"></path>
+                        <path id="waveActive" class="wave-active"></path>
+                        <rect id="waveThumb" class="wave-thumb" rx="2"></rect>
+                    </svg>
+                </div>
+                <div class="time-row">
+                    <span id="currentTime">0:00</span>
+                    <span id="totalDuration">3:05</span>
+                </div>
+
+                <div class="controls">
+                    <button class="icon-btn tonal" id="prevBtn" type="button" title="Rewind 10s" aria-label="Rewind 10 seconds" data-i18n-label="rewind">
+                        <span class="material-symbols-rounded">replay_10</span>
+                    </button>
+                    <button class="play-btn" id="playBtn" type="button" title="Play" aria-label="Play" data-i18n-label="play">
+                        <span class="material-symbols-rounded" id="playIcon">play_arrow</span>
+                    </button>
+                    <button class="icon-btn tonal" id="nextBtn" type="button" title="Forward 10s" aria-label="Forward 10 seconds" data-i18n-label="forward">
+                        <span class="material-symbols-rounded">forward_10</span>
+                    </button>
+                </div>
+            </section>
+
+        </aside>
+
+        <div class="content">
+
+            <section class="block reveal" style="--i:2">
+                <h2 class="section-title">
+                    <span class="title-icon"><span class="material-symbols-rounded" aria-hidden="true">rocket_launch</span></span>
+                    <span data-i18n="projects_title">My Projects</span>
+                </h2>
+                <article class="card project-card">
+                    <div class="project-icon">
+                        <img src="./assets/icon.png" alt="Zeed Icon" loading="eager" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <span class="project-icon-fallback" style="display: none;"><span class="material-symbols-rounded">terminal</span></span>
+                    </div>
+                    <div class="project-info">
+                        <div class="project-header">
+                            <div class="project-name" data-i18n="project1_name">Zeed</div>
+                            <span class="chip chip-outline">
+                                <span class="material-symbols-rounded" aria-hidden="true">inventory_2</span>
+                                <span data-i18n="abandoned">ABANDONED</span>
+                            </span>
+                        </div>
+                        <div class="project-desc" data-i18n="project1_desc">A lightweight and fast asynchronous framework for Telegram bots.</div>
+                        <div class="project-links">
+                            <a href="https://pypi.org/project/zeed/" target="_blank" rel="noopener noreferrer" class="btn btn-tonal">
+                                <span>PyPI</span><span class="material-symbols-rounded" aria-hidden="true">north_east</span>
+                            </a>
+                            <a href="https://github.com/fakeskyline/zeed" target="_blank" rel="noopener noreferrer" class="btn btn-tonal">
+                                <span>GitHub</span><span class="material-symbols-rounded" aria-hidden="true">north_east</span>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </section>
+
+            <section class="block reveal" style="--i:3" id="stackBlock">
+                <div class="section-head">
+                    <h2 class="section-title">
+                        <span class="title-icon"><span class="material-symbols-rounded" aria-hidden="true">layers</span></span>
+                        <span data-i18n="stack_title">My Tech Stack</span>
+                    </h2>
+                    <span class="chip chip-hint" id="stackHint">
+                        <span class="material-symbols-rounded" aria-hidden="true">touch_app</span>
+                        <span data-i18n="stack_hint">Drag the icons</span>
                     </span>
                 </div>
-                <div class="project-info">
-                    <div class="project-header">
-                        <div class="project-name" data-i18n="project1_name">Zeed</div>
-                        <span class="project-badge" data-i18n="abandoned">ABANDONED</span>
-                    </div>
-                    <div class="project-desc" data-i18n="project1_desc">A lightweight and fast asynchronous framework for Telegram bots.</div>
-                    <div class="project-links">
-                        <a href="https://pypi.org/project/zeed/" target="_blank" rel="noopener noreferrer" class="project-link">[PyPI]</a>
-                        <a href="https://github.com/fakeskyline/zeed" target="_blank" rel="noopener noreferrer" class="project-link">[GitHub]</a>
-                    </div>
+                <div class="card tech-stack-container" id="techStackContainer">
+                    <div class="tech-icon" data-lang="javascript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-plain.svg" alt="JS"></div>
+                    <div class="tech-icon" data-lang="php"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-plain.svg" alt="PHP"></div>
+                    <div class="tech-icon" data-lang="python"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-plain.svg" alt="Python"></div>
+                    <div class="tech-icon" data-lang="lua"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/lua/lua-plain.svg" alt="Lua"></div>
+                    <div class="tech-icon" data-lang="bash"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bash/bash-plain.svg" alt="Bash"></div>
+                    <div class="tech-icon" data-lang="html"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-plain.svg" alt="HTML"></div>
+                    <div class="tech-icon" data-lang="css"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-plain.svg" alt="CSS"></div>
+                    <div class="tech-icon" data-lang="git"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-plain.svg" alt="Git"></div>
+                    <div class="tech-icon" data-lang="sql"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-plain.svg" alt="SQL"></div>
+                    <div class="tech-icon" data-lang="kotlin"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-plain.svg" alt="Kotlin"></div>
+                    <div class="tech-icon" data-lang="java"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-plain.svg" alt="Java"></div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <div class="section-title" data-i18n="stack_title">> MY TECH STACK <</div>
-        <div class="tech-stack-container" id="techStackContainer">
-            <span class="tech-tag">JavaScript</span>
-            <span class="tech-tag">PHP</span>
-            <span class="tech-tag">Python</span>
-            <span class="tech-tag">Lua</span>
-            <span class="tech-tag">Bash</span>
-            <span class="tech-tag">HTML</span>
-            <span class="tech-tag">CSS</span>
-            <span class="tech-tag">Git</span>
-            <span class="tech-tag">SQL</span>
         </div>
 
     </main>
+
+    <!-- M3E Floating toolbar: мова (segmented) + тема -->
+    <nav class="toolbar" aria-label="Settings">
+        <div class="seg" id="langSeg" role="radiogroup" aria-label="Language" data-i18n-label="lang_label">
+            <span class="seg-ind" aria-hidden="true"></span>
+            <button type="button" role="radio" aria-checked="false" data-lang="en">EN</button>
+            <button type="button" role="radio" aria-checked="false" data-lang="uk">УК</button>
+            <button type="button" role="radio" aria-checked="false" data-lang="ru">РУ</button>
+        </div>
+        <span class="toolbar-divider" aria-hidden="true"></span>
+        <button class="icon-btn" id="themeBtn" type="button" title="Theme" aria-label="Theme">
+            <span class="material-symbols-rounded" id="themeIcon">dark_mode</span>
+        </button>
+    </nav>
 
     <script src="script.js"></script>
 </body>
